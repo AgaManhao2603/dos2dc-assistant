@@ -37,7 +37,7 @@
         .stat { background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
         .stat-number { font-family: 'Space Mono', monospace; font-size: 2.5rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; }
         .stat-label { font-size: 0.95rem; opacity: 0.9; }
-        .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; padding: 4rem 0; align-items: start; }
+       .main-content { display: block; padding: 4rem 0; }
         .info-section { position: relative; align-self: start; }
         .section-title { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 1.5rem; }
         .benefit-list { list-style: none; margin: 2rem 0; }
@@ -47,7 +47,7 @@
         .sample-questions h3 { font-size: 1.3rem; margin-bottom: 1rem; color: var(--primary); }
         .question-chip { display: inline-block; background: white; padding: 0.5rem 1rem; margin: 0.5rem 0.5rem 0.5rem 0; border-radius: 20px; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; border: 1px solid var(--border); font-family: 'Space Mono', monospace; }
         .question-chip:hover { background: var(--accent); color: white; transform: translateY(-2px); }
-        .chat-section { background: white; border-radius: 16px; box-shadow: 0 10px 40px var(--shadow); overflow: hidden; display: flex; flex-direction: column; height: 700px; border: 2px solid var(--border); }
+     .chat-section { background: white; border-radius: 16px; box-shadow: 0 10px 40px var(--shadow); overflow: hidden; display: flex; flex-direction: column; height: 700px; border: 2px solid var(--border); max-width: 1200px; margin: 0 auto; }
         .chat-header { background: var(--primary); color: white; padding: 1.5rem; border-bottom: 3px solid var(--accent); }
         .chat-header h2 { font-size: 1.5rem; font-family: 'Space Mono', monospace; }
         .chat-header p { opacity: 0.9; margin-top: 0.5rem; font-size: 0.95rem; }
@@ -1194,6 +1194,7 @@ Every standard implemented makes the next easier and faster.`
     </script>
 </body>
 </html>
+
 
 
 
