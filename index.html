@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOS²DC Compliance Assistant | Enhanced Standards Edition</title>
+    <meta name="description" content="Comprehensive data center sustainability compliance assistant covering 60+ standards, regulations, and certifications.">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A3D2C;
+            --secondary: #E8F3E8;
+            --accent: #4A9D6F;
+            --dark: #1A1A1A;
+            --light: #F8FAF8;
+            --border: #C5D9C5;
+            --shadow: rgba(10, 61, 44, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Crimson Pro', serif; color: var(--dark); background: var(--light); line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        header { background: var(--primary); color: white; padding: 1.5rem 0; position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--accent); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: 700; }
+        .logo sup { font-size: 0.8rem; }
+        nav a { color: white; text-decoration: none; margin-left: 2rem; opacity: 0.9; transition: opacity 0.3s; }
+        nav a:hover { opacity: 1; }
+        .hero { background: linear-gradient(135deg, var(--primary) 0%, #0F5A40 100%); color: white; padding: 5rem 0; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px); pointer-events: none; }
+        .hero-content { position: relative; z-index: 1; max-width: 900px; }
+        .hero h1 { font-size: 3.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem; }
+        .hero p { font-size: 1.5rem; opacity: 0.95; margin-bottom: 2rem; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+        .stat { background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
+        .stat-number { font-family: 'Space Mono', monospace; font-size: 2.5rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; }
+        .stat-label { font-size: 0.95rem; opacity: 0.9; }
+        .main-content { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; padding: 4rem 0; }
+        .info-section { position: sticky; top: 120px; align-self: start; }
+        .section-title { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 1.5rem; }
+        .benefit-list { list-style: none; margin: 2rem 0; }
+        .benefit-list li { padding: 1rem 0; border-bottom: 1px solid var(--border); font-size: 1.1rem; }
+        .benefit-list strong { color: var(--accent); font-weight: 700; }
+        .sample-questions { background: var(--secondary); padding: 2rem; border-radius: 12px; margin: 2rem 0; border: 2px solid var(--accent); }
+        .sample-questions h3 { font-size: 1.3rem; margin-bottom: 1rem; color: var(--primary); }
+        .question-chip { display: inline-block; background: white; padding: 0.5rem 1rem; margin: 0.5rem 0.5rem 0.5rem 0; border-radius: 20px; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; border: 1px solid var(--border); font-family: 'Space Mono', monospace; }
+        .question-chip:hover { background: var(--accent); color: white; transform: translateY(-2px); }
+        .chat-section { background: white; border-radius: 16px; box-shadow: 0 10px 40px var(--shadow); overflow: hidden; display: flex; flex-direction: column; height: 700px; border: 2px solid var(--border); }
+        .chat-header { background: var(--primary); color: white; padding: 1.5rem; border-bottom: 3px solid var(--accent); }
+        .chat-header h2 { font-size: 1.5rem; font-family: 'Space Mono', monospace; }
+        .chat-header p { opacity: 0.9; margin-top: 0.5rem; font-size: 0.95rem; }
+        .knowledge-indicator { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8; }
+        .knowledge-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 2rem; background: linear-gradient(to bottom, var(--light) 0%, white 100%); }
+        .message { margin-bottom: 1.5rem; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .message-label { font-family: 'Space Mono', monospace; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--accent); font-weight: 700; }
+        .message-content { background: white; padding: 1.2rem; border-radius: 8px; border: 1px solid var(--border); line-height: 1.7; }
+        .message.user .message-content { background: var(--secondary); border-color: var(--accent); }
+        .message.assistant .message-content { background: white; border-left: 3px solid var(--accent); }
+        .message-content p { margin-bottom: 0.8rem; }
+        .message-content p:last-child { margin-bottom: 0; }
+        .sources { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: #666; }
+        .source-tag { display: inline-block; background: var(--secondary); padding: 0.25rem 0.75rem; border-radius: 12px; margin-right: 0.5rem; margin-top: 0.5rem; font-family: 'Space Mono', monospace; font-size: 0.75rem; }
+        .typing-indicator { display: flex; gap: 0.3rem; padding: 1rem; }
+        .typing-indicator span { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: typing 1.4s infinite; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.7; } 30% { transform: translateY(-10px); opacity: 1; } }
+        .chat-input-area { padding: 1.5rem; background: var(--secondary); border-top: 2px solid var(--border); }
+        .chat-input-wrapper { display: flex; gap: 1rem; }
+        .chat-input { flex: 1; padding: 1rem; border: 2px solid var(--border); border-radius: 8px; font-family: 'Crimson Pro', serif; font-size: 1rem; resize: none; }
+        .chat-input:focus { outline: none; border-color: var(--accent); }
+        .send-button { padding: 1rem 2rem; background: var(--accent); color: white; border: none; border-radius: 8px; font-family: 'Space Mono', monospace; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .send-button:hover:not(:disabled) { background: var(--primary); transform: translateY(-2px); }
+        .send-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .lead-capture { background: var(--primary); color: white; padding: 4rem 0; margin-top: 4rem; }
+        .lead-form { max-width: 600px; margin: 0 auto; text-align: center; }
+        .lead-form h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .lead-form p { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; }
+        .form-input { width: 100%; padding: 1rem; border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; font-family: 'Crimson Pro', serif; font-size: 1rem; background: rgba(255,255,255,0.1); color: white; margin-bottom: 1rem; }
+        .form-input::placeholder { color: rgba(255,255,255,0.6); }
+        .form-input:focus { outline: none; border-color: var(--accent); background: rgba(255,255,255,0.15); }
+        .submit-button { width: 100%; padding: 1.2rem; background: var(--accent); color: white; border: none; border-radius: 8px; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; margin-top: 1rem; }
+        .submit-button:hover { background: white; color: var(--primary); transform: translateY(-2px); }
+        footer { background: var(--dark); color: white; padding: 3rem 0 2rem; margin-top: 4rem; }
+        .footer-content { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; margin-bottom: 2rem; }
+        .footer-section h3 { font-family: 'Space Mono', monospace; margin-bottom: 1rem; }
+        .footer-section p { opacity: 0.8; line-height: 1.8; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 0.8rem; }
+        .footer-links a { color: white; text-decoration: none; opacity: 0.8; transition: opacity 0.3s; }
+        .footer-links a:hover { opacity: 1; }
+        .copyright { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); opacity: 0.6; font-size: 0.9rem; }
+        @media (max-width: 1024px) {
+            .main-content { grid-template-columns: 1fr; }
+            .info-section { position: static; }
+            .stat-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+            .footer-content { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const sampleQuestions = [
+            "What are my CSRD reporting obligations?",
+            "How does DOS²DC satisfy EU Taxonomy?",
+            "What green financing options are available?",
+            "Which standards should I implement first?",
+            "Calculate savings for a 5MW facility"
+        ];
+const KNOWLEDGE_BASE = {
+            csrd: {
+                title: "CSRD Compliance Requirements",
+                tags: ["csrd", "reporting", "esg", "disclosure", "esrs", "eu", "mandatory"],
+                content: `CSRD (Corporate Sustainability Reporting Directive) is the EU's comprehensive mandatory sustainability reporting regime.
+
+MANDATORY REQUIREMENTS:
+- Double materiality assessment (impact + financial materiality)
+- Report according to ESRS standards (E1-E5, S1-S4, G1)
+- Digital XBRL tagging for machine-readability
+- Third-party assurance mandatory
+- Value chain (Scope 3) reporting required
+
+IMPLEMENTATION TIMELINE:
+- 2024: Large listed companies (>500 employees)
+- 2025: Large companies (>250 employees or >€50M revenue)
+- 2026: Listed SMEs
+- 2028: Non-EU companies with >€150M EU revenue
+
+DATA CENTER REQUIREMENTS:
+- Energy consumption and sources (ESRS E1-5)
+- GHG emissions Scope 1, 2, 3 (ESRS E1-6)
+- Renewable energy % and procurement (ESRS E1-5)
+- Water consumption and discharge (ESRS E3)
+- Waste generation and e-waste recycling (ESRS E5)
+- Climate risk assessment (ESRS E1-1)
+- Net-zero transition plan (ESRS E1)
+
+DOS²DC SOLUTION:
+- Automated data collection from facility systems
+- XBRL-ready data tagging
+- Pre-built ESRS templates
+- Continuous compliance monitoring
+- Audit trail for verification
+
+COST IMPACT:
+Without DOS²DC: €200K-€400K annually
+With DOS²DC: €35K-€75K annually
+Annual Savings: €125K-€325K per entity
+
+PENALTIES:
+- Fines up to 5% of annual turnover
+- Director liability
+- Investor consequences`
+            },
+            
+            taxonomy: {
+                title: "EU Taxonomy Alignment",
+                tags: ["taxonomy", "sustainable", "finance", "green", "investment", "eu"],
+                content: `EU Taxonomy is the classification system for environmentally sustainable economic activities.
+
+DATA CENTER CRITERIA (Activity 8.1):
+
+PUE Requirements by Climate Zone:
+- Hot regions (Zone A): PUE ≤ 1.5
+- Warm regions (Zone B): PUE ≤ 1.4
+- Cold regions (Zone C): PUE ≤ 1.3
+
+OR achieve PUE ≤1.5 with:
+- ≥50% renewable energy by 2025
+- ≥75% renewable energy by 2030
+
+RENEWABLE ENERGY:
+- 100% renewable electricity commitment by 2030
+- PPAs or RECs from facilities commissioned after 2015
+- On-site generation counts fully
+
+WASTE HEAT RECOVERY:
+- Implementation where technically and economically feasible
+- Heat networks within 15km
+- Feasibility assessment required
+
+DO NO SIGNIFICANT HARM (DNSH):
+- Climate adaptation: Resilience measures
+- Water: Sustainable management
+- Circular economy: E-waste management
+- Pollution: Refrigerant leak prevention
+- Biodiversity: Site assessment
+
+DOS²DC AUTOMATED COMPLIANCE:
+- Real-time PUE calculation
+- Renewable energy tracking with verification
+- Waste heat recovery monitoring
+- Climate risk scoring
+- Automated DNSH assessment
+
+FINANCIAL IMPLICATIONS:
+- Green bonds (10-50 bps lower rates)
+- €2T+ Taxonomy-aligned investment funds
+- Enhanced valuations (20-35% premium)
+- Reduced investor scrutiny`
+            },
+
+            eed: {
+                title: "Energy Efficiency Directive (EED)",
+                tags: ["eed", "energy", "efficiency", "reporting", "eu", "mandatory"],
+                content: `EU Energy Efficiency Directive 2023/1791 sets binding targets with specific data center requirements.
+
+MANDATORY REQUIREMENTS (Article 11):
+For facilities >1 MW capacity:
+
+ANNUAL REPORTING:
+- Total facility energy consumption (kWh)
+- IT equipment energy consumption (kWh)
+- Energy by source (grid, on-site, renewable)
+- PUE (Power Usage Effectiveness)
+- Cooling system energy
+- Geographic location and climate zone
+
+WASTE HEAT DISCLOSURE:
+- Potential for waste heat recovery
+- Technical feasibility assessment
+- Economic viability analysis
+- Volume recovered and use case if implemented
+- Reasons if not implemented
+
+SUBMISSION TIMELINE:
+- Annual reporting by March 31 for previous year
+- XML format to national competent authorities
+- Publicly available registry
+
+ENERGY AUDIT REQUIREMENTS:
+Large enterprises (>250 employees):
+- Comprehensive audit every 4 years
+- Must cover 80%+ of energy consumption
+- Certified energy auditors required
+- ISO 50001 certification exempts from audit
+
+DOS²DC COMPLIANCE:
+- Automated energy monitoring and KPI tracking
+- Waste heat assessment with feasibility calculations
+- XML report generation in required format
+- Direct submission to national databases
+
+COMPLIANCE COSTS:
+Manual: €15K-€20K annually
+DOS²DC: €2K-€3K annually
+Time savings: ~90%
+
+PENALTIES (vary by member state):
+- Germany: Up to €50,000
+- France: Up to €75,000
+- Netherlands: Up to €21,000`
+            },
+
+            roi: {
+                title: "Financial ROI and Cost Savings",
+                tags: ["roi", "savings", "cost", "financial", "calculate", "facility"],
+                content: `Comprehensive ROI analysis showing DOS²DC transforms sustainability from cost to profit driver.
+
+COMPLIANCE COST REDUCTION:
+
+WITHOUT DOS²DC (Per Facility/Year):
+- Manual data collection: €30,000
+- Data validation: €7,500
+- CSRD/ESRS reporting: €18,000
+- EU Taxonomy documentation: €12,000
+- EED reporting: €6,000
+- ESG ratings (GRESB, CDP): €9,000
+- External consulting: €40K-€75K
+- External assurance: €25K-€35K
+- Management time: €25,000
+- Filing fees: €10K-€15K
+TOTAL: €190K-€232K annually
+
+WITH DOS²DC:
+- Automated data collection: €3,000
+- Report review: €1,500
+- Platform fee: €15K-€20K
+- Certification renewal: €8K-€10K
+- Streamlined assurance: €12K-€15K
+- Management review: €5,000
+TOTAL: €43.5K-€54.5K annually
+
+ANNUAL COMPLIANCE SAVINGS: €135.5K-€177.5K
+ROI ON COMPLIANCE ALONE: 450-600%+
+
+OPERATIONAL EFFICIENCY (5MW Facility):
+
+Energy Optimization (20% reduction):
+- Baseline cost: €750,000/year
+- AI-optimized cooling: €150,000 savings
+
+Predictive Maintenance (40% downtime reduction):
+- Typical downtime cost: €125,000/year
+- DOS²DC analytics: €50,000 savings
+
+Water Efficiency (15% reduction):
+- Baseline cost: €75,000/year
+- Optimization: €11,250 savings
+
+Equipment Lifecycle (10-15% extension):
+- Deferred CAPEX: €25K-€40K/year
+
+Insurance Premium Reduction (10-20%):
+- Baseline: €200,000/year
+- Reduction: €20K-€40K/year
+
+TOTAL OPERATIONAL SAVINGS: €256K-€291K/year
+
+REVENUE ENHANCEMENT:
+- Premium pricing: 15-25% (€750K-€1.25M phased)
+- Tenant retention: €150K-€225K/year
+- Faster acquisition: €125K-€250K/year
+TOTAL REVENUE BENEFIT: €375K-€575K/year
+
+FINANCIAL SUMMARY - 5MW FACILITY:
+Year 1:
+- Implementation cost: €100K-€150K
+- Annual DOS²DC costs: €43.5K-€54.5K
+- Annual benefits: €766K-€1.04M
+- First year net: €616K-€893K
+- ROI: 450-650%
+- Payback: 2-3 months
+
+10-Year NPV (7% discount): €5.2M-€7.1M
+
+PORTFOLIO (10 Facilities):
+- Annual benefit: €7.66M-€10.44M
+- Implementation: €1M-€1.5M
+- Payback: 1.5-2.5 months`
+            },
+
+            comparison: {
+                title: "DOS²DC vs Traditional Certifications",
+                tags: ["leed", "breeam", "iso", "compare", "certification", "standards"],
+                content: `Comprehensive comparison showing DOS²DC as complementary "meta-standard".
+
+VS. LEED/BREEAM:
+
+DOS²DC Advantages:
+- Continuous real-time monitoring vs. periodic (3-5 year)
+- Machine-readable ontology vs. document-based
+- Automated validation vs. manual documentation
+- Data center-specific vs. general building standards
+- Maps to 60+ standards vs. voluntary certification only
+- €35K-€75K annual vs. €150K-€250K
+- 50-100 hours/year vs. 600+ hours
+
+Strategic Positioning:
+→ Complementary not competitive
+→ DOS²DC makes achieving LEED/BREEAM easier
+→ Maintain LEED/BREEAM for market recognition
+→ Use DOS²DC for operational excellence
+
+VS. UPTIME TIER:
+
+Relationship: Highly Complementary
+- Tier: "Can it stay up?" (reliability)
+- DOS²DC: "Is it sustainable?" (efficiency)
+- Combined: "Tier III + DOS²DC Level 2"
+
+DOS²DC Enhances Tier:
+- Continuous monitoring supports TCOS
+- Documentation for management practices
+- Predictive maintenance improves reliability
+
+VS. ESG RATINGS (GRESB, MSCI, CDP):
+
+DOS²DC Value:
+- Automates 70% of GRESB data requirements
+- Improves data quality → higher scores
+- Reduces submission time: 60-80h → 10-15h
+- Provides superior disclosure for MSCI
+- Automated CDP questionnaire responses
+
+Key Insight:
+DOS²DC is not a rating itself but the data infrastructure enabling excellent performance across ALL ESG ratings.
+
+STRATEGIC POSITIONING:
+
+Current Recommendation (2025):
+Hybrid Approach:
+- DOS²DC as operational/compliance platform
+- Maintain LEED/BREEAM for market recognition
+- Maintain Tier for reliability credibility
+- Use DOS²DC to excel in GRESB, MSCI, CDP
+- Leverage for all regulatory compliance
+
+DOS²DC doesn't compete—it makes all standards more achievable, valuable, and less burdensome.`
+            },
+
+            implementation: {
+                title: "DOS²DC Implementation Guide",
+                tags: ["implementation", "onboarding", "setup", "integration", "pilot"],
+                content: `Phased implementation roadmap from pilot to portfolio-wide deployment.
+
+TIMELINE: 3-4 months pilot to full certification
+
+PHASE 0: PRE-IMPLEMENTATION (2-3 weeks)
+- Current state assessment
+- Regulatory obligations inventory
+- Systems inventory (DCIM/BMS)
+- Stakeholder engagement
+- Pilot facility selection
+- Integration architecture design
+
+PHASE 1: PILOT DEPLOYMENT (6-8 weeks)
+
+Week 1-2: Infrastructure Setup
+- Sensor deployment if needed
+- API integration and testing
+- Platform configuration
+- Initial data ingestion
+
+Week 3-4: Ontology Mapping
+- Data quality checks
+- Calibration of metrics
+- Historical backfill (6-12 months)
+- Baseline establishment
+
+Week 5-6: Reporting Configuration
+- CSRD/ESRS templates
+- EU Taxonomy documentation
+- EED reporting setup
+- Custom dashboards
+
+Week 7-8: Testing & Go-Live
+- End-to-end testing
+- User acceptance testing
+- Team training
+- Hypercare support (2 weeks)
+
+PHASE 2: CERTIFICATION (4-6 weeks)
+- Compliance verification
+- Level assignment (1, 2, or 3)
+- Audit preparation
+- Third-party audit
+- Certification issuance
+
+PHASE 3: OPTIMIZATION (Ongoing)
+- AI-driven efficiency recommendations
+- Cooling optimization
+- Predictive maintenance
+- Quarterly CSRD/ESRS reports
+- Annual EED submissions
+
+PHASE 4: PORTFOLIO ROLLOUT (2-3 months per facility)
+
+TOTAL COST OF OWNERSHIP:
+Pilot Facility (One-time):
+- Software licensing: €15K-€20K
+- Implementation services: €50K-€75K
+- Additional instrumentation: €10K-€30K
+- Internal labor: €15K-€25K
+TOTAL PILOT: €90K-€150K
+
+Ongoing (Per Facility/Year):
+- Platform subscription: €15K-€20K
+- Certification renewal: €8K-€10K
+- Internal labor: €5K-€8K
+TOTAL ANNUAL: €28K-€38K
+
+SUCCESS CRITERIA (12 months):
+✓ DOS²DC certification achieved
+✓ 95%+ data completeness
+✓ Automated reporting operational
+✓ 60%+ compliance cost reduction
+✓ 10%+ energy savings
+✓ 3:1 ROI minimum`
+            }
+        };
+water_management: {
+                title: "Water & Resource Management Standards",
+                tags: ["water", "wue", "resource", "waste", "circular", "weee", "rohs"],
+                content: `Comprehensive water and resource management covering WUE, circular economy, and e-waste.
+
+WATER STANDARDS:
+
+WUE (ISO 30134-9):
+Formula: WUE = Annual water usage (liters) / IT equipment energy (kWh)
+
+Typical Ranges:
+- Air-cooled: 0-0.2 L/kWh
+- Adiabatic: 0.2-1.0 L/kWh
+- Evaporative: 1.0-2.5 L/kWh
+- Water-cooled chillers: 1.5-3.0 L/kWh
+
+Geographic Context:
+- Water-scarce regions: Target <0.5 L/kWh
+- Moderate stress: Target <1.5 L/kWh
+- Water-abundant: Up to 2.0 L/kWh acceptable
+
+E-WASTE REGULATIONS:
+
+WEEE Directive (2012/19/EU):
+Requirements:
+- Collection targets: 65% of EEE placed on market OR 85% of WEEE generated
+- Recovery rates: 85% for large equipment, 80% recycling/reuse
+- Documentation of recycling for each asset
+- Certified WEEE processors required
+
+RoHS Directive (2011/65/EU):
+Restricted Substances (<0.1% by weight):
+- Lead, Mercury, Cadmium, Hexavalent chromium
+- Polybrominated biphenyls (PBB), PBDE
+- Four phthalates (DEHP, BBP, DBP, DIBP)
+
+CIRCULAR ECONOMY:
+
+5R Strategies:
+1. REDUCE: Minimize resource consumption
+2. REUSE: Extend equipment life, internal redeployment
+3. RECYCLE: Material recovery (precious metals, steel, copper)
+4. REMANUFACTURE: Factory refurbishment
+5. REPURPOSE: Alternative uses for decommissioned equipment
+
+Resource Circularity Index (RCI):
+RCI = (Materials in circular flows / Total materials procured) × 100%
+Target: >30% good, >50% ambitious
+
+F-GAS REGULATION (EU 517/2014):
+
+Requirements:
+- Leak detection for systems >5 tonnes CO2-eq
+- Quarterly to annual leak checking
+- HFC phase-down: to 21% of 2015 baseline by 2030
+
+Common Refrigerants:
+- R-134a: GWP 1,430 (phasing out)
+- R-410A: GWP 2,088 (phasing out)
+- R-32: GWP 675 (transitional)
+- R-1234yf: GWP 4 (low-GWP alternative)
+- Ammonia/CO2: GWP 0 (natural refrigerants)
+
+DOS²DC TRACKING:
+- Automated WUE calculation
+- E-waste recycling rates monitoring
+- Material flow accounting
+- F-gas inventory and leak rates
+- Circular economy metrics (equipment lifespan, reuse rates)`
+            },
+
+            green_finance: {
+                title: "Green Finance & Investment Standards",
+                tags: ["finance", "investment", "green", "bonds", "loans", "gresb", "esg"],
+                content: `Green finance framework enabling access to sustainable capital and enhanced valuations.
+
+GREEN BONDS:
+
+ICMA Green Bond Principles:
+Four Core Components:
+1. Use of Proceeds: Energy efficiency, renewable energy, water management
+2. Project Evaluation: Environmental objectives, selection process
+3. Management of Proceeds: Segregated tracking, allocation reporting
+4. Reporting: Annual impact reporting (energy saved, emissions avoided)
+
+EU Green Bond Standard (EU GBS):
+Stricter Requirements:
+- 100% EU Taxonomy alignment mandatory
+- Standardized Green Bond Factsheet
+- Annual allocation and impact reporting
+- Mandatory external pre/post-issuance review
+
+Financial Benefits:
+- Interest rate reduction: 10-50 basis points
+- Example: $500M bond at 25 bps saving = $1.25M/year
+- Broader investor base (€2T+ green bond funds)
+
+SUSTAINABILITY-LINKED LOANS (SLL):
+
+Structure:
+- Interest rates tied to Sustainability Performance Targets (SPTs)
+- Key Performance Indicators (KPIs) measured annually
+- Rate step-down if achieved, step-up if missed
+- Typical swing: 10-30 basis points
+
+Data Center SPTs:
+- Achieve portfolio PUE ≤1.3 by 2027
+- Reach 75% renewable energy by 2026
+- Reduce Scope 1+2 GHG emissions 50% by 2030
+- Achieve 85% e-waste recycling rate
+
+Example Impact ($300M SLL, 20 bps):
+- Achieve SPT: Save $600,000/year
+- Miss SPT: Pay penalty $600,000/year
+
+ESG RATINGS:
+
+GRESB Real Estate Assessment:
+- €6.8T AUM participates
+- Annual assessment cycle
+- Overall score 0-100, Star rating 1-5
+
+DOS²DC Value:
+- Automates 70% of data requirements
+- Submission time: 60-80h → 10-15h
+- Positions for 5-Star rating
+
+MSCI ESG Ratings:
+Scale: AAA (Leader) to CCC (Laggard)
+Key Issues for Data Centers:
+- Carbon Emissions (Very High weight)
+- Energy Management (High)
+- Water Stress (Medium-High)
+
+CDP (Carbon Disclosure Project):
+- 680+ investors (€130T AUM) request disclosure
+- A-List recognition for leadership
+- Climate Change + Water Security programs
+
+DOS²DC Advantage:
+- Automated CDP questionnaire responses
+- Complete verified data improves scores
+- Positions for A-List recognition
+
+STRATEGIC VALUE:
+✓ Lower cost of capital (25-50 bps reduction)
+✓ Enhanced asset valuations (20-35% green premium)
+✓ Faster capital deployment
+✓ Competitive differentiation`
+            },
+
+            infrastructure_standards: {
+                title: "Infrastructure & Certification Standards",
+                tags: ["infrastructure", "leed", "breeam", "uptime", "tier", "iso"],
+                content: `Building and operational certification standards for market recognition.
+
+LEED FOR DATA CENTERS v4.1:
+
+Credit Categories (110 points total):
+- Energy & Atmosphere: 33 points (HIGHEST)
+- Water Efficiency: 11 points
+- Materials & Resources: 13 points
+- Indoor Environmental Quality: 16 points
+
+Certification Levels:
+- Certified: 40-49 points
+- Silver: 50-59 points
+- Gold: 60-79 points
+- Platinum: 80+ points
+
+DOS²DC Value:
+- Provides continuous performance data
+- Automates energy/water credits documentation
+- Maintains certification through ongoing monitoring
+
+Cost: €150K-€250K
+Timeline: 12-18 months
+
+BREEAM INTERNATIONAL 2016:
+
+Categories:
+- Energy: 19% (HIGHEST)
+- Management: 12%
+- Water: 6%
+- Materials: 12.5%
+
+Rating Levels:
+- Pass: ≥30%
+- Good: ≥45%
+- Very Good: ≥55%
+- Excellent: ≥70%
+- Outstanding: ≥85%
+
+UPTIME INSTITUTE TIER STANDARD:
+
+Tier Classifications:
+- Tier I: 99.671% availability (28.8 hrs downtime/year)
+- Tier II: 99.741% availability (22.0 hrs/year)
+- Tier III: 99.982% availability (1.6 hrs/year)
+- Tier IV: 99.995% availability (0.4 hrs/year)
+
+Certifications:
+1. TCDD: Design Documents
+2. TCCF: Constructed Facility
+3. TCOS: Operational Sustainability (annual, most prestigious)
+
+Relationship with DOS²DC:
+- Complementary: Tier = reliability, DOS²DC = sustainability
+- Combined: "Tier III + DOS²DC Level 2"
+- DOS²DC supports TCOS requirements
+
+ISO STANDARDS:
+
+ISO 55001 (Asset Management):
+- Equipment lifecycle optimization
+- Predictive maintenance
+- CAPEX/OPEX optimization
+
+ISO 27001 (Information Security):
+- Physical and environmental security controls
+- Incident detection and response
+
+ISO 22301 (Business Continuity):
+- Business impact analysis
+- Disaster recovery procedures
+
+IMPLEMENTATION STRATEGY:
+
+Baseline: DOS²DC Level 1 + local codes (€50K-€100K)
+Standard: DOS²DC Level 2 + LEED Silver + Tier III (€200K-€350K)
+Leadership: DOS²DC Level 3 + LEED Gold + Tier III TCOS + ISO stack (€400K-€600K)
+
+DOS²DC AS CERTIFICATION MULTIPLIER:
+Single platform supports multiple certifications with 60-85% cost reduction.`
+            },
+
+            emerging_standards: {
+                title: "Emerging & Future Regulations",
+                tags: ["emerging", "future", "2025", "2026", "2027", "regulation", "ifrs"],
+                content: `Emerging regulations 2024-2030 and future-proofing strategy.
+
+NEAR-TERM (2024-2025):
+
+IFRS S1 & S2 (Effective Jan 2024):
+Global Sustainability Disclosure Standards:
+- S1: General sustainability-related financial information
+- S2: Climate-related disclosures (incorporates TCFD)
+- Scope 1, 2, 3 emissions required
+- Integration with financial reporting
+
+Geographic Adoption:
+- UK: Mandatory for large companies (2024+)
+- Singapore: Phased implementation 2025
+- Australia: Adoption confirmed
+- EU: ESRS considered "equivalent"
+
+EU AI Act (Phased through 2027):
+Data Center Implications:
+- AI-powered cooling/optimization: Must disclose when AI makes decisions
+- Data governance: Training data quality requirements
+- Human oversight: Required for operational AI
+- Performance monitoring: AI system validation
+
+SEC Climate Disclosure Rule (US, Pending):
+Proposed Requirements:
+- Climate-related risks and oversight
+- Scope 1 and 2 emissions (phased)
+- Scope 3 if material or if target exists
+- Similar to CSRD but US-focused
+
+MEDIUM-TERM (2026-2028):
+
+European DC Energy Efficiency Certification:
+Expected Features:
+- Rating scale: A-G (like building energy labels)
+- Mandatory metrics: PUE, renewable %, waste heat recovery
+- Public registry of certified facilities
+- Initially >1 MW, expanding to >500 kW
+
+ISO 14068 (Carbon Neutrality):
+Requirements:
+- Complete Scope 1, 2, material Scope 3 inventory
+- Emission reduction hierarchy: Avoid → Reduce → Offset
+- Transparent public disclosure
+- Replaces PAS 2060 as global standard
+
+CSRD Expansion:
+- 2026: Listed SMEs (250+ employees)
+- 2028: Non-EU companies with >€150M EU revenue
+- Impact: 15,000+ additional companies
+
+LONG-TERM (2028-2030):
+
+Stricter Requirements:
+- Water scarcity regulations (regional restrictions)
+- Mandatory renewable energy (75-100% in some jurisdictions)
+- Carbon pricing and border adjustments
+- Comprehensive Scope 3 reporting
+
+DOS²DC FUTURE-PROOFING:
+
+Ontological Architecture:
+- New requirements = new ontology classes (not system rebuild)
+- Semantic structure adapts to evolving standards
+- Backward compatibility maintained
+
+Competitive Advantage:
+Early Adopters: 2-3 year head start, lower costs, market leadership
+Late Adopters: Reactive scrambling, higher costs, laggard positioning
+
+Don't wait for final regulations. Lead with best practices → regulations become advantage not burden.`
+            },
+
+            implementation_roadmap: {
+                title: "Implementation Roadmap & Prioritization",
+                tags: ["roadmap", "priority", "tier", "phased", "planning", "timeline"],
+                content: `Prioritized implementation strategy: Tier 1-4 approach.
+
+TIER 1: IMMEDIATE (Months 1-6)
+Objective: Regulatory Compliance & Risk Mitigation
+
+Priority Standards:
+1. ISO 50001 (Energy Management) - €30K-€50K
+2. ISO 30134-2 (PUE) - Included
+3. GHG Protocol (Carbon Accounting) - Included
+4. EU EED (If EU-located) - Included
+5. CSRD/ESRS (If subject) - €50K-€100K
+6. TCFD (Climate Risk) - €20K-€40K
+
+TIER 1 OUTCOMES (6 Months):
+✓ Regulatory compliance achieved
+✓ ISO 50001 certified
+✓ Complete GHG inventory
+✓ €200K-€500K annual savings
+Investment: €100K-€200K
+Payback: 2-4 months
+
+TIER 2: NEAR-TERM (Months 6-12)
+Objective: Comprehensive Environmental Management
+
+Priority Standards:
+1. ISO 14001 (Environmental) - €40K-€60K
+2. ISO 30134 Series (Additional KPIs) - Included
+3. GRI Standards - €15K-€30K
+4. SASB Standards - Included
+5. GRESB (If investor-backed) - €5K-€15K
+
+TIER 2 OUTCOMES (12 Months):
+✓ ISO 14001 certified
+✓ All ISO 30134 KPIs tracked
+✓ GRI and SASB reporting operational
+✓ GRESB participation
+Incremental Investment: €100K-€150K
+Cumulative Benefit: €500K-€900K/year
+ROI: 350-450%
+
+TIER 3: MEDIUM-TERM (Months 12-24)
+Objective: Market Leadership
+
+Priority Standards:
+1. LEED or BREEAM - €100K-€200K
+2. ISO 55001 (Asset Management) - €50K-€80K
+3. ISO 27001 (Security) - €60K-€100K
+4. Green Bonds/SLLs - €30K-€60K
+5. CDP Disclosure - No fee
+
+TIER 3 OUTCOMES (24 Months):
+✓ LEED/BREEAM certified
+✓ ISO 55001, 27001 certified
+✓ Green finance capable
+✓ Comprehensive certification stack
+Incremental Investment: €200K-€400K
+Cumulative Benefit: €800K-€1.5M/year
+Asset Valuation Uplift: 25-40%
+
+TIER 4: CONTINUOUS (Ongoing)
+- Monitor emerging regulations
+- Track new ISO standards
+- Advanced optimization
+- Net-zero pathways
+
+KEY INSIGHT:
+Start with mandatory compliance → Build toward strategic positioning → Sustain leadership
+
+Every standard implemented makes the next easier and faster.`
+            }
+        };
+// Search function - finds relevant knowledge base entries
+        function searchKnowledgeBase(query) {
+            const queryLower = query.toLowerCase();
+            const results = [];
+
+            Object.entries(KNOWLEDGE_BASE).forEach(([key, entry]) => {
+                let score = 0;
+                
+                if (entry.title.toLowerCase().includes(queryLower)) {
+                    score += 10;
+                }
+                
+                entry.tags.forEach(tag => {
+                    if (queryLower.includes(tag.toLowerCase()) || tag.toLowerCase().includes(queryLower)) {
+                        score += 5;
+                    }
+                });
+                
+                const contentPreview = entry.content.toLowerCase().substring(0, 500);
+                if (contentPreview.includes(queryLower)) {
+                    score += 3;
+                }
+                
+                if (score > 0) {
+                    results.push({ key, entry, score });
+                }
+            });
+
+            results.sort((a, b) => b.score - a.score);
+            return results.slice(0, 3);
+        }
+
+        function App() {
+            const [messages, setMessages] = useState([]);
+            const [input, setInput] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            const messagesEndRef = useRef(null);
+
+            const scrollToBottom = () => {
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            };
+
+            useEffect(() => {
+                scrollToBottom();
+            }, [messages]);
+
+            const handleSend = async () => {
+                if (!input.trim() || isLoading) return;
+
+                const userMessage = input.trim();
+                setInput('');
+                setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+                setIsLoading(true);
+
+                try {
+                    const relevantEntries = searchKnowledgeBase(userMessage);
+                    
+                    let context = "You are the DOS²DC Compliance Assistant with expertise in data center sustainability standards. Answer based on the following information:\n\n";
+                    const sources = [];
+                    
+                    relevantEntries.forEach(({ entry }, index) => {
+                        context += `[Source ${index + 1}: ${entry.title}]\n${entry.content}\n\n`;
+                        sources.push(entry.title);
+                    });
+
+                    const response = await fetch("https://api.anthropic.com/v1/messages", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            model: "claude-sonnet-4-20250514",
+                            max_tokens: 2000,
+                            messages: [
+                                {
+                                    role: "user",
+                                    content: `${context}\n\nUser Question: ${userMessage}\n\nProvide a helpful, accurate answer based on the DOS²DC framework information provided above. Be concise but comprehensive. Use specific numbers and examples when relevant.`
+                                }
+                            ]
+                        })
+                    });
+
+                    const data = await response.json();
+                    const assistantMessage = data.content[0].text;
+
+                    setMessages(prev => [...prev, {
+                        role: 'assistant',
+                        content: assistantMessage,
+                        sources: sources.length > 0 ? sources : null
+                    }]);
+                } catch (error) {
+                    console.error('Error:', error);
+                    setMessages(prev => [...prev, {
+                        role: 'assistant',
+                        content: 'I apologize, but I encountered an error processing your request. Please try again or contact support at info@dos2dc.org'
+                    }]);
+                }
+
+                setIsLoading(false);
+            };
+
+            const handleKeyPress = (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                }
+            };
+
+            const handleQuestionClick = (question) => {
+                setInput(question);
+            };
+
+            return (
+                <>
+                    <header>
+                        <div className="container">
+                            <div className="header-content">
+                                <div className="logo">DOS<sup>2</sup>DC</div>
+                                <nav>
+                                    <a href="#features">Features</a>
+                                    <a href="#assistant">Try Assistant</a>
+                                    <a href="#contact">Contact</a>
+                                </nav>
+                            </div>
+                        </div>
+                    </header>
+
+                    <section className="hero">
+                        <div className="container">
+                            <div className="hero-content">
+                                <h1>Transform Sustainability Compliance from Burden to Advantage</h1>
+                                <p>One platform. 60+ standards. Automated compliance. Real-time optimization.</p>
+                                <div className="stat-grid">
+                                    <div className="stat">
+                                        <div className="stat-number">85%</div>
+                                        <div className="stat-label">Compliance Cost Reduction</div>
+                                    </div>
+                                    <div className="stat">
+                                        <div className="stat-number">$155K</div>
+                                        <div className="stat-label">Average Annual Savings per Facility</div>
+                                    </div>
+                                    <div className="stat">
+                                        <div className="stat-number">60+</div>
+                                        <div className="stat-label">Standards Covered</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="features" className="main-content">
+                        <div className="container">
+                            <div className="info-section">
+                                <h2 className="section-title">Regulatory Compliance. Automated.</h2>
+                                <p style={{fontSize: '1.2rem', marginBottom: '2rem', lineHeight: '1.8'}}>
+                                    Data centers face 15-25+ overlapping sustainability regulations. DOS²DC is your universal compliance engine—collect data once, report everywhere.
+                                </p>
+                                
+                                <ul className="benefit-list">
+                                    <li><strong>CSRD/ESRS:</strong> Automated XBRL-tagged disclosures for EU reporting</li>
+                                    <li><strong>EU Taxonomy:</strong> Real-time alignment validation and documentation</li>
+                                    <li><strong>EED Reporting:</strong> Quarterly XML submissions to national databases</li>
+                                    <li><strong>Green Finance:</strong> Evidence for green bonds, sustainability-linked loans</li>
+                                    <li><strong>ESG Ratings:</strong> Auto-populate GRESB, CDP, MSCI assessments</li>
+                                    <li><strong>ISO Standards:</strong> 50001, 14001, 27001, 55001 compliance support</li>
+                                </ul>
+
+                                <div className="sample-questions">
+                                    <h3>Try asking the assistant:</h3>
+                                    {sampleQuestions.map((q, i) => (
+                                        <div 
+                                            key={i} 
+                                            className="question-chip"
+                                            onClick={() => handleQuestionClick(q)}
+                                        >
+                                            {q}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div id="assistant" className="chat-section">
+                                <div className="chat-header">
+                                    <h2>DOS²DC Compliance Assistant</h2>
+                                    <p>Ask anything about standards, compliance, ROI, or implementation</p>
+                                    <div className="knowledge-indicator">
+                                        <div className="knowledge-dot"></div>
+                                        <span>Enhanced knowledge base: 60+ standards, 11 comprehensive guides</span>
+                                    </div>
+                                </div>
+
+                                <div className="chat-messages">
+                                    {messages.length === 0 && (
+                                        <div className="message assistant">
+                                            <div className="message-label">DOS²DC ASSISTANT</div>
+                                            <div className="message-content">
+                                                <p>Hello! I'm your DOS²DC compliance expert with comprehensive knowledge of:</p>
+                                                <p style={{marginTop: '1rem'}}>
+                                                    <strong>• Regulatory Compliance:</strong> CSRD/ESRS, EU Taxonomy, EED<br/>
+                                                    <strong>• Standards:</strong> ISO 50001, 14001, 27001, 55001<br/>
+                                                    <strong>• Certifications:</strong> LEED, BREEAM, Uptime Tier<br/>
+                                                    <strong>• Green Finance:</strong> Green bonds, SLLs, GRESB, CDP<br/>
+                                                    <strong>• Water & Resources:</strong> WUE, WEEE, circular economy<br/>
+                                                    <strong>• ROI & Implementation:</strong> Cost savings, timelines
+                                                </p>
+                                                <p style={{marginTop: '1rem'}}>What would you like to know?</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {messages.map((msg, index) => (
+                                        <div key={index} className={`message ${msg.role}`}>
+                                            <div className="message-label">
+                                                {msg.role === 'user' ? 'YOU' : 'DOS²DC ASSISTANT'}
+                                            </div>
+                                            <div className="message-content">
+                                                {msg.content.split('\n').map((line, i) => (
+                                                    <p key={i}>{line}</p>
+                                                ))}
+                                                {msg.sources && (
+                                                    <div className="sources">
+                                                        <strong>Sources:</strong> {msg.sources.map((source, i) => (
+                                                            <span key={i} className="source-tag">{source}</span>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                    {isLoading && (
+                                        <div className="message assistant">
+                                            <div className="message-label">DOS²DC ASSISTANT</div>
+                                            <div className="message-content">
+                                                <div className="typing-indicator">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div ref={messagesEndRef} />
+                                </div>
+
+                                <div className="chat-input-area">
+                                    <div className="chat-input-wrapper">
+                                        <textarea
+                                            className="chat-input"
+                                            placeholder="Ask about compliance requirements, ROI calculations, implementation timelines..."
+                                            value={input}
+                                            onChange={(e) => setInput(e.target.value)}
+                                            onKeyPress={handleKeyPress}
+                                            rows="2"
+                                            disabled={isLoading}
+                                        />
+                                        <button 
+                                            className="send-button"
+                                            onClick={handleSend}
+                                            disabled={isLoading || !input.trim()}
+                                        >
+                                            {isLoading ? 'Thinking...' : 'Send'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+<section id="contact" className="lead-capture">
+                        <div className="container">
+                            <div className="lead-form">
+                                <h2>Ready to Transform Your Compliance?</h2>
+                                <p>Join the Early Access Program. Limited to 15-20 founding partners.</p>
+                                <div className="form-group">
+                                    <input type="text" className="form-input" placeholder="Your Name" />
+                                </div>
+                                <div className="form-group">
+                                    <input type="email" className="form-input" placeholder="Work Email" />
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" className="form-input" placeholder="Company / Organization" />
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" className="form-input" placeholder="Number of Data Center Facilities" />
+                                </div>
+                                <button className="submit-button">Request Early Access</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer>
+                        <div className="container">
+                            <div className="footer-content">
+                                <div className="footer-section">
+                                    <h3>DOS<sup>2</sup>DC</h3>
+                                    <p>Digital Ontology-based Sustainability Standards for Data Centers. Transforming compliance from burden to competitive advantage through intelligent automation.</p>
+                                </div>
+                                <div className="footer-section">
+                                    <h3>Quick Links</h3>
+                                    <ul className="footer-links">
+                                        <li><a href="#features">Features</a></li>
+                                        <li><a href="#assistant">Assistant</a></li>
+                                        <li><a href="#contact">Contact</a></li>
+                                    </ul>
+                                </div>
+                                <div className="footer-section">
+                                    <h3>Contact</h3>
+                                    <ul className="footer-links">
+                                        <li><a href="mailto:info@dos2dc.org">info@dos2dc.org</a></li>
+                                        <li><a href="#">Early Access Program</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="copyright">
+                                © 2025 Data Centers Sustainability Alliance. All rights reserved.
+                            </div>
+                        </div>
+                    </footer>
+                </>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
